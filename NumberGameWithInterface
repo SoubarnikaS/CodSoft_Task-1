@@ -5,7 +5,10 @@ TASK 1
 4. Repeat steps 2 and 3 until the user guesses the correct number.
 
 Source Code :
+import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.Toolkit;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.*;
@@ -28,10 +31,15 @@ public class GuessNumber_GUI
 
                 if(guessedNumber >= 100 && guessedNumber <= 200)
                 {
-                    if(guessedNumber == randomNumber)
+                    if (guessedNumber == randomNumber) 
                     {
-                        JOptionPane.showInternalMessageDialog(null,"Congratulaions! You have guessed the number!");
+                        JOptionPane.showMessageDialog(null, "Congratulations! You have guessed the number!");
+                        int option = JOptionPane.showConfirmDialog(null, "Do you want to play again?", "Game Over", JOptionPane.YES_NO_OPTION);
                         input.setEditable(false);
+                        if (option == JOptionPane.YES_OPTION)
+                            resetGame();
+                        else
+                            System.exit(0); 
                     }
 
                     else if( guessedNumber < randomNumber)
@@ -54,27 +62,57 @@ public class GuessNumber_GUI
             }
             input.setText(""); 
         }
-        else if( totalGuess == 1)
-            JOptionPane.showMessageDialog(null,"Game Over!\nThe number was " + randomNumber);
+        else if (totalGuess == 1) 
+        {
+            JOptionPane.showMessageDialog(null, "Game Over!\nThe number was " + randomNumber);
+            int option = JOptionPane.showConfirmDialog(null, "Do you want to play again?", "Game Over", JOptionPane.YES_NO_OPTION);
+
+            if (option == JOptionPane.YES_OPTION) 
+                resetGame();
+            else
+                System.exit(0);
+        
+        }
+    }
+
+    private static void resetGame() 
+    {
+        totalGuess = 10;
+        randomNumber = (int)(Math.random() * 101) + 100;
+        input.setEditable(true);
+        output.setText("Guesses left : 10\n");
     }
     
     public static void main(String args[])
     {
         JFrame frame = new JFrame("Guess The Number!");
-        frame.setVisible(true);
-        frame.setSize(600,400);
+
+        Toolkit kit = Toolkit.getDefaultToolkit();
+        Dimension screenSize = kit.getScreenSize();
+        int screenHeight = screenSize.height;
+        int screenWidth = screenSize.width;
+
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setResizable(false);
+
         frame.setLayout(new FlowLayout());
+        frame.setSize(screenWidth / 3, screenHeight / 2);
+        frame.setLocation(500, 250);
+        frame.setVisible(true);
 
         guessLabel = new JLabel("Enter the number between 100 and 200");
         input = new JTextField(4);
         button = new JButton("Guess!");
         output = new JTextArea(20,50);
+        output.setFont(new Font("SansSerif",Font.BOLD,12));
+       
 
         frame.add(guessLabel);
         frame.add(input);
         frame.add(button);
         frame.add(output);
         output.setEditable(false);
+        output.append("Guesses left : 10\n");
 
         button.addActionListener(new ActionListener() {
             @Override
@@ -86,3 +124,4 @@ public class GuessNumber_GUI
       frame.setVisible(true);
     }
 }
+
